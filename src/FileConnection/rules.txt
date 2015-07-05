@@ -1,0 +1,25 @@
+	RULE 1 : IF Obstacle IS VeryNear AND BrakeForce IS high AND SlipRatio IS Unsafe THEN PWM IS minimum;
+	
+	RULE 2 : IF Obstacle IS VeryNear AND BrakeForce IS high AND SlipRatio IS Critical THEN PWM IS medium;
+	
+	RULE 3 : IF Obstacle IS VeryNear AND BrakeForce IS high AND SlipRatio IS Safe THEN PWM IS maximum;
+	
+	RULE 4 : IF Obstacle IS Near AND BrakeForce IS high AND SlipRatio IS Unsafe THEN PWM IS minimum;
+	
+	RULE 5 : IF Obstacle IS Near AND BrakeForce IS high AND SlipRatio IS Critical THEN PWM IS medium; 
+	
+	RULE 6 : IF Obstacle IS Near AND BrakeForce IS high AND SlipRatio IS Safe THEN PWM IS maximum; 
+	
+	RULE 7 : IF Obstacle IS Near AND BrakeForce IS low AND SlipRatio IS Safe THEN PWM IS maximum; 
+	
+	RULE 8 : IF Obstacle IS Near AND BrakeForce IS low AND SlipRatio IS Critical THEN PWM IS medium; 
+	
+	RULE 9 : IF Obstacle IS Near AND BrakeForce IS low AND SlipRatio IS Safe THEN PWM IS maximum; 
+	
+	RULE 10 : IF Obstacle IS NoObstacle AND BrakeForce IS high AND SlipRatio IS Critical THEN PWM IS medium; 
+	
+	RULE 11 : IF Obstacle IS NoObstacle AND BrakeForce IS high AND SlipRatio IS Unsafe THEN PWM IS minimum; 
+	
+	RULE 12 : IF Obstacle IS NoObstacle AND BrakeForce IS low AND SlipRatio IS Unsafe THEN PWM IS minimum;
+	
+	RULE 13 : IF Obstacle IS NoObstacle AND BrakeForce IS low AND SlipRatio IS Critical THEN PWM IS medium;

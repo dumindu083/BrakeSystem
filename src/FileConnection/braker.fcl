@@ -1,0 +1,72 @@
+
+
+FUNCTION_BLOCK braker	// Block definition
+
+VAR_INPUT				// Define input variables
+
+	Obstacle : REAL; (* RANGE(0 .. 100) *)
+	BrakeForce : REAL; (* RANGE(0 .. 100) *)
+	SlipRatio : REAL; (* RANGE(0 .. 100) *)
+
+END_VAR
+
+VAR_OUTPUT				// Define output variable
+
+	PWM : REAL; (* RANGE(0 .. 100) *)
+
+END_VAR
+
+FUZZIFY Obstacle			// Fuzzify input variable 'Obstacle'
+
+	TERM VeryNear := (0,0) (0,1) (30, 1) (45, 0) ;	//trapezoidal
+	TERM Near := (25, 0) (45,1) (60,1) (80,0);	//trapezoidal
+	TERM NoObstacle := (60, 0) (80, 1) (100,1) (100,0);	//trapezoidal
+
+END_FUZZIFY
+
+FUZZIFY BrakeForce			// Fuzzify input variable 'BrakeForce'
+
+	TERM low := (0,0) (0,1) (30, 1) (75, 0) ;	//trapezoidal
+	TERM high := (30, 0) (75,1) (100,1) (100,0);    //trapezoidal
+
+END_FUZZIFY
+
+FUZZIFY SlipRatio			// Fuzzify input variable 'SlipRatio'
+	
+	TERM Safe := (0, 0) (20, 1) (75,0); //triangle 
+	TERM Critical := (20, 0) (60,1) (95,0); //triangle
+	TERM Unsafe := (60, 0) (100, 1) (100,0);	//triangle
+
+END_FUZZIFY
+
+DEFUZZIFY PWM			// Defzzzify output variable 'PWM'
+
+	TERM minimum := 35; //Singleton
+	TERM medium := 65;	//Singleton
+	TERM maximum := 95;	//Singleton
+
+	METHOD : COGS;		// Use 'Center Of Gravity Singleton' defuzzification method
+
+END_DEFUZZIFY
+
+RULEBLOCK No1
+	AND : MIN;			// Use 'min' for 'and' (also implicit use 'max' for 'or' to fulfill DeMorgan's Law)
+	
+	RULE 1 : IF Obstacle IS VeryNear AND BrakeForce IS high AND SlipRatio IS Unsafe THEN PWM IS minimum;
+	RULE 2 : IF Obstacle IS VeryNear AND BrakeForce IS high AND SlipRatio IS Critical THEN PWM IS medium;
+	RULE 3 : IF Obstacle IS VeryNear AND BrakeForce IS high AND SlipRatio IS Safe THEN PWM IS maximum;
+	RULE 4 : IF Obstacle IS Near AND BrakeForce IS high AND SlipRatio IS Unsafe THEN PWM IS minimum;
+	RULE 5 : IF Obstacle IS Near AND BrakeForce IS high AND SlipRatio IS Critical THEN PWM IS medium; 
+	RULE 6 : IF Obstacle IS Near AND BrakeForce IS high AND SlipRatio IS Safe THEN PWM IS maximum; 
+	RULE 7 : IF Obstacle IS Near AND BrakeForce IS low AND SlipRatio IS Safe THEN PWM IS maximum; 
+	RULE 8 : IF Obstacle IS Near AND BrakeForce IS low AND SlipRatio IS Critical THEN PWM IS medium; 
+	RULE 9 : IF Obstacle IS Near AND BrakeForce IS low AND SlipRatio IS Safe THEN PWM IS maximum; 
+	RULE 10 : IF Obstacle IS NoObstacle AND BrakeForce IS high AND SlipRatio IS Critical THEN PWM IS medium; 
+	RULE 11 : IF Obstacle IS NoObstacle AND BrakeForce IS high AND SlipRatio IS Unsafe THEN PWM IS minimum; 
+	RULE 12 : IF Obstacle IS NoObstacle AND BrakeForce IS low AND SlipRatio IS Unsafe THEN PWM IS minimum;
+	RULE 13 : IF Obstacle IS NoObstacle AND BrakeForce IS low AND SlipRatio IS Critical THEN PWM IS medium;
+	
+END_RULEBLOCK
+
+
+END_FUNCTION_BLOCK
