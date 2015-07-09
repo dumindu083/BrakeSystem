@@ -111,7 +111,7 @@ public class Controller extends javax.swing.JFrame implements ActionListener {
 
     }
 
-    public void showWarning(String message) {
+    public void showWarning(String message) {//shows a warning message
         JOptionPane.showMessageDialog(null, message, this.getTitle(), JOptionPane.WARNING_MESSAGE);
     }
 
